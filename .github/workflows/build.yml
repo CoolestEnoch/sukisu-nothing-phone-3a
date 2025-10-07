@@ -12,11 +12,11 @@ jobs:
         repository: NothingOSS/android_kernel_msm-6.1_nothing_sm7635
     - name: Preparements
       run: |
-        ls
         pwd
+        ls
 
         sudo apt install -y build-essential git curl wget bison flex zip bc cpio libssl-dev ccache
-        sudo apt install -y git gnupg flex bison gperf build-essential zip curl wget zlib1g-dev gcc-multilib g++-multilib libc6-dev-i386 lib32ncurses5-dev x11proto-core-dev libx11-dev lib32z-dev libgl1-mesa-dev libxml2-utils xsltproc unzip bc
+        # sudo apt install -y git gnupg flex bison gperf build-essential zip curl wget zlib1g-dev gcc-multilib g++-multilib libc6-dev-i386 lib32ncurses5-dev x11proto-core-dev libx11-dev lib32z-dev libgl1-mesa-dev libxml2-utils xsltproc unzip bc
 
         echo "[+] Append kernel params to kprobes"
         echo "CONFIG_KPM=y" >> arch/arm64/configs/gki_defconfig
@@ -29,7 +29,7 @@ jobs:
       uses: lemniskett/android-kernel-actions@master
       id: build
       env:
-        KERNEL_PATH: android_kernel_msm-6.1_nothing_sm7635
+        KERNEL_PATH: /home/runner/work/sukisu-nothing-phone-3a/sukisu-nothing-phone-3a
       with:
         arch: arm64
         compiler: proton-clang/master/binutils
@@ -39,7 +39,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: Image
-        path: android_kernel_msm-6.1_nothing_sm7635/arch/arm64/boot/Image
+        path: /home/runner/work/sukisu-nothing-phone-3a/sukisu-nothing-phone-3a/arch/arm64/boot/Image
         if-no-files-found: warn
         retention-days: 30
 
