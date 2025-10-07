@@ -25,16 +25,21 @@ jobs:
         curl -LSs "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh" | bash -s susfs-main
 
         echo "[+] Done."
-    - name: Android kernel build
-      uses: lemniskett/android-kernel-actions@master
-      id: build
-      env:
-        KERNEL_PATH: /home/runner/work/sukisu-nothing-phone-3a/sukisu-nothing-phone-3a
-      with:
-        arch: arm64
-        compiler: proton-clang/master/binutils
-        defconfig: gki_defconfig
-        image: Image
+
+        wget https://github.com/kdrag0n/proton-clang/archive/refs/tags/20210522.zip
+        unzip 20210522.zip
+        rm 20210522.zip
+        mv proton-clang-20210522 ../proton-clang-20210522
+        export PATH=/home/runner/work/sukisu-nothing-phone-3a/proton-clang-20210522:$PATH
+        mkdir ../ccache
+        export CCACHE_DIR="/home/runner/work/sukisu-nothing-phone-3a/ccache" 
+        export CC="ccache gcc"
+        export CXX="ccache g++"
+        MAKE_ARGS="ARCH=arm64 SUBARCH=arm64 O=out CC=clang CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi- CROSS_COMPILE_COMPAT=arm-linux-gnueabi- CLANG_TRIPLE=aarch64-linux-gnu-"
+
+        make $MAKE_ARGS gki_defconfig
+        make $MAKE_ARGS -j$(nproc)
+    
     - name: Upload Build
       uses: actions/upload-artifact@v4
       with:
